@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merače — Voda &amp; Plyn</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <rect width="28" height="28" rx="8" fill="#1a7fc4"/>
+    <path d="M14 5C14 5 7 12 7 17a7 7 0 0014 0C21 12 14 5 14 5z" fill="white" fill-opacity="0.9"/>
+    <path d="M10 19c0-3 2-6 2-6s2 3 2 6" stroke="#1a7fc4" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+  <h1>Merače — Voda &amp; Plyn</h1>
+  <div class="header-tabs">
+    <button class="tab-btn active" onclick="switchTab('prehled', this)">Prehľad</button>
+    <button class="tab-btn" onclick="switchTab('zadaj', this)">Zadať</button>
+    <button class="tab-btn" onclick="switchTab('historia', this)">História</button>
+    <button class="tab-btn" onclick="switchTab('analyza', this)">Analýza</button>
+  </div>
+  <div class="sync-status" id="syncStatus" title="Stav synchronizácie"></div>
+</header>
+
+<main>
+
+  <!-- PREHĽAD -->
+  <div class="section active" id="tab-prehled">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card water skeleton"></div>
+      <div class="stat-card gas skeleton"></div>
+      <div class="stat-card water skeleton"></div>
+      <div class="stat-card gas skeleton"></div>
+    </div>
+    <div class="card">
+      <div class="section-header">
+        <span class="card-title" style="margin-bottom:0">Mesačná spotreba</span>
+        <div class="toggle-row" style="margin-bottom:0">
+          <button class="toggle-pill active both" onclick="setChartMode('both',this)">Voda + Plyn</button>
+          <button class="toggle-pill water" onclick="setChartMode('water',this)">Len voda</button>
+          <button class="toggle-pill gas" onclick="setChartMode('gas',this)">Len plyn</button>
+        </div>
+      </div>
+      <div style="height:1rem"></div>
+      <div class="chart-wrap h280"><canvas id="monthChart" role="img" aria-label="Graf mesačnej spotreby">Graf mesačnej spotreby</canvas></div>
+    </div>
+    <div style="height:1rem"></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Posledné odčítania — Voda</div>
+        <div id="lastWater"><div class="skeleton" style="height:80px;border-radius:8px"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Posledné odčítania — Plyn</div>
+        <div id="lastGas"><div class="skeleton" style="height:80px;border-radius:8px"></div></div>
+      </div>
+    </div>
+    <div style="height:1rem"></div>
+    <div class="card">
+      <div class="card-title">Ročná spotreba</div>
+      <div class="chart-wrap h240"><canvas id="yearChart" role="img" aria-label="Ročná spotreba">Ročná spotreba</canvas></div>
+    </div>
+  </div>
+
+  <!-- ZADAŤ -->
+  <div class="section" id="tab-zadaj">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title" style="color: var(--c-water)">💧 Vodomer</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Dátum odčítania</label>
+            <input type="date" id="w-date">
+          </div>
+          <div class="form-group">
+            <label>Stav vodomeru</label>
+            <div class="input-unit">
+              <input type="number" id="w-value" step="0.001" min="0" placeholder="napr. 1234.567">
+              <span>m³</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:.75rem">
+          <label>Poznámka (voliteľné)</label>
+          <textarea id="w-note" placeholder="napr. po úniku, ročné odčítanie..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveReading('water')">💧 Uložiť vodomer</button>
+        </div>
+        <div class="form-note" id="w-hint"></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color: var(--c-gas)">🔥 Plynomer</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Dátum odčítania</label>
+            <input type="date" id="g-date">
+          </div>
+          <div class="form-group">
+            <label>Stav plynomeru</label>
+            <div class="input-unit">
+              <input type="number" id="g-value" step="0.01" min="0" placeholder="napr. 5678.90">
+              <span>m³</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:.75rem">
+          <label>Poznámka (voliteľné)</label>
+          <textarea id="g-note" placeholder="napr. výmena meraču, zimné odčítanie..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary gas-btn" onclick="saveReading('gas')">🔥 Uložiť plynomer</button>
+        </div>
+        <div class="form-note" id="g-hint"></div>
+      </div>
+    </div>
+    <div style="height:1rem"></div>
+    <div class="card">
+      <div class="card-title">Ceny energií</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Cena vody (€/m³)</label>
+          <div class="input-unit">
+            <input type="number" id="price-water" step="0.01" min="0" placeholder="napr. 2.50">
+            <span>€</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Cena plynu (€/m³)</label>
+          <div class="input-unit">
+            <input type="number" id="price-gas" step="0.001" min="0" placeholder="napr. 0.085">
+            <span>€</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="savePrices()">Uložiť ceny</button>
+      </div>
+    </div>
+    <div style="height:1rem"></div>
+    <div class="card">
+      <div class="card-title">Export / Import dát</div>
+      <div class="export-row">
+        <button class="btn btn-ghost" onclick="exportData()">⬇ Exportovať JSON</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">⬆ Importovať JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        <button class="btn btn-danger btn-sm" onclick="confirmClear()">🗑 Vymazať všetko</button>
+      </div>
+      <div class="form-note" style="margin-top:.5rem">Export/Import zálohy všetkých odčítaní.</div>
+    </div>
+  </div>
+
+  <!-- HISTÓRIA -->
+  <div class="section" id="tab-historia">
+    <div class="card">
+      <div class="section-header">
+        <span class="card-title" style="margin-bottom:0">Všetky záznamy</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="filterType" onchange="renderHistory()" style="font-size:13px;padding:5px 10px">
+            <option value="all">Voda + Plyn</option>
+            <option value="water">Len voda</option>
+            <option value="gas">Len plyn</option>
+          </select>
+          <select id="filterYear" onchange="renderHistory()" style="font-size:13px;padding:5px 10px">
+            <option value="all">Všetky roky</option>
+          </select>
+        </div>
+      </div>
+      <div id="historyTableWrap" style="overflow-x:auto">
+        <table class="readings-table">
+          <thead>
+            <tr>
+              <th>Dátum</th><th>Typ</th><th>Stav (m³)</th><th>Spotreba</th>
+              <th>Dni</th><th>Cena (€)</th><th>Poznámka</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALÝZA -->
+  <div class="section" id="tab-analyza">
+    <div class="card">
+      <div class="card-title">Porovnanie rokov</div>
+      <div id="yearCompWrap"></div>
+    </div>
+    <div style="height:1rem"></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Mesačná spotreba vody po rokoch</div>
+        <div class="chart-wrap h280"><canvas id="heatWater" role="img" aria-label="Spotreba vody po mesiacoch">Spotreba vody</canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Mesačná spotreba plynu po rokoch</div>
+        <div class="chart-wrap h280"><canvas id="heatGas" role="img" aria-label="Spotreba plynu po mesiacoch">Spotreba plynu</canvas></div>
+      </div>
+    </div>
+    <div style="height:1rem"></div>
+    <div class="card">
+      <div class="card-title">Denná priemerná spotreba (trend)</div>
+      <div class="chart-wrap h260"><canvas id="dailyChart" role="img" aria-label="Priemerná denná spotreba">Denná spotreba</canvas></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Vymazať všetky dáta?</h3>
+    <p>Táto akcia je nevratná. Odporúčame najprv exportovať zálohu.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Zrušiť</button>
+      <button class="btn btn-danger" onclick="clearAll()">Vymazať</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module" src="app.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</body>
+</html>
