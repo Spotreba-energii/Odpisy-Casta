@@ -13,21 +13,26 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Merače">
 
-<!-- Icons -->
+<!-- Favicon – inline SVG funguje v každom prehliadači bez závislosti na súboroch -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231a5fa0'/%3E%3Cstop offset='100%25' stop-color='%230d3d6e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M20 8C20 8 8 24 8 34a12 12 0 0024 0C32 24 20 8 20 8Z' fill='white'/%3E%3Cpath d='M44 10C44 10 32 22 32 34c0 6.6 5.4 10 10 10s10-3.4 10-10C52 22 44 10 44 10Z' fill='%23f5a623'/%3E%3Cpath d='M44 44C44 44 37 40 38 32c1-5 5-8 5-8s-1 6 4 8c0-8 4-14 4-14s3 8 2 16c3-3 2-9 2-9 4 5 3 12 1 16-2 3-6 5-12 5Z' fill='%23fff176' opacity='.85'/%3E%3C/svg%3E">
+<!-- PNG fallback + Apple touch icon pre iOS -->
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true" style="flex-shrink:0">
-    <rect width="28" height="28" rx="7" fill="url(#hg)"/>
-    <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a7fc4"/><stop offset="100%" stop-color="#0d3d6e"/></linearGradient></defs>
-    <path d="M10 5C10 5 5 10.5 5 13.5a5 5 0 0010 0C15 10.5 10 5 10 5Z" fill="white" fill-opacity="0.93"/>
-    <path d="M18 6C18 6 14 10 14 14c0 2.5 1.8 4.5 4 4.5S22 16.5 22 14C22 10 18 6 18 6Z" fill="#e8943a" fill-opacity="0.93"/>
+  <svg width="32" height="32" viewBox="0 0 64 64" fill="none" aria-hidden="true" style="flex-shrink:0">
+    <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a5fa0"/><stop offset="100%" stop-color="#0d3d6e"/></linearGradient></defs>
+    <rect width="64" height="64" rx="14" fill="url(#hg)"/>
+    <!-- kvapka vody -->
+    <path d="M20 8C20 8 8 24 8 34a12 12 0 0024 0C32 24 20 8 20 8Z" fill="white"/>
+    <path d="M14 36C14 28 18 23 20 20" stroke="#90caf9" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <!-- plameň -->
+    <path d="M44 54C44 54 30 48 31 38c1-6 7-10 7-10s-2 8 5 10c0-10 5-18 5-18s4 10 2 20c4-4 3-11 3-11 5 6 4 15 1 20-2 4-7 5-13 5Z" fill="#f5a623"/>
+    <path d="M44 54C44 54 36 50 37 42c1-5 5-7 5-7s-1 5 3 6c0-7 4-12 4-12s3 7 2 14c3-3 2-8 2-8 3 5 2 11 0 15-2 3-7 4-13 4Z" fill="#fff176" opacity="0.85"/>
   </svg>
   <h1>Merače</h1>
   <div class="sync-status" id="syncStatus" title="Stav synchronizácie"></div>
