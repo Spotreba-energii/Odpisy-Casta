@@ -205,9 +205,11 @@ function getLast12Months() {
 // ── TABS ──
 function switchTab(name, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
+  // activate the correct nav button
+  const target = btn || document.querySelector(`.nav-btn[data-tab="${name}"]`);
+  if (target) target.classList.add('active');
   renderAll();
 }
 
